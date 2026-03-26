@@ -3,7 +3,10 @@ spring:
     url: jdbc:postgresql://localhost:5433/job_db
     username: postgres
     password: Neon@1689
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+    properties:
+      hibernate.format_sql: true
