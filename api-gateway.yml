@@ -4,15 +4,83 @@ spring:
 
   cloud:
     gateway:
+
       discovery:
         locator:
           enabled: false
-      ...
+
+      routes:
+
+        # ================= EMPLOYER ONLY ==================
+        - id: employer-create-job
+          uri: lb://JOB-SERVICE
+          predicates:
+            - Path=/job-service/job
+            - Method=POST
+          filters:
+            - name: RoleFilter
+              args:
+                allowedRoles: EMPLOYER
+
+        - id: employer-get-applications-for-job
+          uri: lb://APPLICATION-SERVICE
+          predicates:
+            - Path=/application-service/application/job/**
+            - Method=GET
+          filters:
+            - name: RoleFilter
+              args:
+                allowedRoles: EMPLOYER
+
+        # ================= JOBSEEKER ONLY ==================
+        - id: jobseeker-apply-for-job
+          uri: lb://APPLICATION-SERVICE
+          predicates:
+            - Path=/application-service/application
+            - Method=POST
+          filters:
+            - name: RoleFilter
+              args:
+                allowedRoles: JOBSEEKER
+
+        - id: jobseeker-send-message
+          uri: lb://MESSAGE-SERVICE
+          predicates:
+            - Path=/message-service/message
+            - Method=POST
+          filters:
+            - name: RoleFilter
+              args:
+                allowedRoles: JOBSEEKER
+
+        # ================= SHARED ==================
+        - id: shared-job-listing
+          uri: lb://JOB-SERVICE
+          predicates:
+            - Path=/job-service/job/**
+            - Method=GET
+
+        - id: shared-get-messages
+          uri: lb://MESSAGE-SERVICE
+          predicates:
+            - Path=/message-service/message/**
+            - Method=GET
+
+        # ================= PUBLIC ==================
+        - id: auth-login
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth-service/auth/login
+            - Method=POST
+
+
 eureka:
   instance:
-     ...
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
+
   client:
-     fetch-registry: true
-     register-with-eureka: true
-     service-url:
-       defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
