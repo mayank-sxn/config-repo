@@ -1,2 +1,62 @@
-sample:
-  message: "Config Server is successfully reading from GitHub"
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - name: JwtAuthenticationFilter
+
+      routes:
+
+        # ----------------- EMPLOYER ONLY ROUTES -------------------
+        - id: employer-create-job
+          uri: lb://job-service
+          predicates:
+            - Path=/job-service/job
+            - Method=POST
+          filters:
+            - name: RoleFilter
+              args:
+                allowedRoles: EMPLOYER
+
+        - id: employer-get-applications
+          uri: lb://application-service
+          predicates:
+            - Path=/application-service/application/job/**
+            - Method=GET
+          filters:
+            - name: RoleFilter
+              args:
+                allowedRoles: EMPLOYER
+
+
+        # ----------------- JOBSEEKER ONLY ROUTES -------------------
+        - id: jobseeker-apply-job
+          uri: lb://application-service
+          predicates:
+            - Path=/application-service/application
+            - Method=POST
+          filters:
+            - name: RoleFilter
+              args:
+                allowedRoles: JOBSEEKER
+
+        - id: jobseeker-message-employer
+          uri: lb://message-service
+          predicates:
+            - Path=/message-service/message
+            - Method=POST
+          filters:
+            - name: RoleFilter
+              args:
+                allowedRoles: JOBSEEKER
+
+
+        # ----------------- SHARED ROUTES (Both roles allowed) -------------------
+        - id: shared-job-list
+          uri: lb://job-service
+          predicates:
+            - Path=/job-service/job/**
+
+        - id: shared-message-get
+          uri: lb://message-service
+          predicates:
+            - Path=/message-service/message/**
