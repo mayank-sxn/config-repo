@@ -4,7 +4,6 @@ spring:
 
   cloud:
     gateway:
-
       discovery:
         locator:
           enabled: false
@@ -77,10 +76,11 @@ spring:
 eureka:
   instance:
     prefer-ip-address: true
-    instance-id: ${spring.application.name}:${server.port}
+    instance-id: api-gateway:${server.port}
 
   client:
     register-with-eureka: true
     fetch-registry: true
+    registryFetchIntervalSeconds: 10
     service-url:
       defaultZone: http://localhost:8761/eureka
