@@ -1,20 +1,26 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: api-gateway
 
   cloud:
     gateway:
+
       discovery:
         locator:
           enabled: false
 
       routes:
 
-        # ================= EMPLOYER ONLY ==================
+        # ========================================================
+        # EMPLOYER ONLY ROUTES
+        # ========================================================
         - id: employer-create-job
           uri: lb://JOB-SERVICE
           predicates:
-            - Path=/job-service/job
+            - Path=/job
             - Method=POST
           filters:
             - name: RoleFilter
@@ -24,18 +30,20 @@ spring:
         - id: employer-get-applications-for-job
           uri: lb://APPLICATION-SERVICE
           predicates:
-            - Path=/application-service/application/job/**
+            - Path=/application/job/**
             - Method=GET
           filters:
             - name: RoleFilter
               args:
                 allowedRoles: EMPLOYER
 
-        # ================= JOBSEEKER ONLY ==================
+        # ========================================================
+        # JOBSEEKER ONLY ROUTES
+        # ========================================================
         - id: jobseeker-apply-for-job
           uri: lb://APPLICATION-SERVICE
           predicates:
-            - Path=/application-service/application
+            - Path=/application
             - Method=POST
           filters:
             - name: RoleFilter
@@ -45,33 +53,36 @@ spring:
         - id: jobseeker-send-message
           uri: lb://MESSAGE-SERVICE
           predicates:
-            - Path=/message-service/message
+            - Path=/message
             - Method=POST
           filters:
             - name: RoleFilter
               args:
                 allowedRoles: JOBSEEKER
 
-        # ================= SHARED ==================
+        # ========================================================
+        # SHARED ROUTES (both roles)
+        # ========================================================
         - id: shared-job-listing
           uri: lb://JOB-SERVICE
           predicates:
-            - Path=/job-service/job/**
+            - Path=/job/**
             - Method=GET
 
         - id: shared-get-messages
           uri: lb://MESSAGE-SERVICE
           predicates:
-            - Path=/message-service/message/**
+            - Path=/message/**
             - Method=GET
 
-        # ================= PUBLIC ==================
+        # ========================================================
+        # PUBLIC ROUTES (no auth)
+        # ========================================================
         - id: auth-login
           uri: lb://AUTH-SERVICE
           predicates:
-            - Path=/auth-service/auth/login
+            - Path=/auth/login
             - Method=POST
-
 
 eureka:
   instance:
