@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Pixel Perfect ERD">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Entities with attributes -->
+        <mxCell id="emp" value="EMPLOYERS&#xa;----------------&#xa;id (PK)&#xa;organization_name&#xa;email&#xa;address&#xa;contact_no&#xa;created_at" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f1fb;strokeColor=#185fa5;" vertex="1" parent="1">
+          <mxGeometry x="500" y="40" width="260" height="180" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="jobs" value="JOBS&#xa;----------------&#xa;id (PK)&#xa;title&#xa;location&#xa;description&#xa;experience&#xa;salary&#xa;status&#xa;skills&#xa;employer_id (FK)&#xa;company_name&#xa;posted_at" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f1fb;strokeColor=#185fa5;" vertex="1" parent="1">
+          <mxGeometry x="500" y="300" width="280" height="240" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="seekers" value="JOB_SEEKERS&#xa;----------------&#xa;id (PK)&#xa;name&#xa;email&#xa;address&#xa;contact_no&#xa;skill_set&#xa;resume_url&#xa;created_at" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f1fb;strokeColor=#185fa5;" vertex="1" parent="1">
+          <mxGeometry x="850" y="40" width="280" height="200" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="apps" value="JOB_APPLICATIONS&#xa;----------------&#xa;id (PK)&#xa;job_id (FK)&#xa;job_seeker_id (FK)&#xa;employer_id (FK)&#xa;status&#xa;applied_at" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f1fb;strokeColor=#185fa5;" vertex="1" parent="1">
+          <mxGeometry x="150" y="300" width="300" height="200" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="msg" value="MESSAGES&#xa;----------------&#xa;id (PK)&#xa;content&#xa;sender_id&#xa;sender_type&#xa;receiver_id&#xa;receiver_type&#xa;job_id (FK)&#xa;employer_id (FK)&#xa;job_seeker_id (FK)&#xa;sent_at" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f1fb;strokeColor=#185fa5;" vertex="1" parent="1">
+          <mxGeometry x="850" y="300" width="300" height="240" as="geometry"/>
+        </mxCell>
+
+        <!-- Relationships with labels -->
+        <mxCell id="r1" value="posts" style="endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="emp" target="jobs">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="r2" value="has" style="endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="jobs" target="apps">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="r3" value="submits" style="endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="seekers" target="apps">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="r4" value="scopes" style="endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="jobs" target="msg">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="r5" value="sends/receives" style="endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="emp" target="msg">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="r6" value="sends/receives" style="endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="seekers" target="msg">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
